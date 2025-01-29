@@ -25,21 +25,11 @@
 							<label asp-for="Input.Password" class="form-label"><b>Contraseña</b></label>
 							<span asp-validation-for="Input.Password" class="text-danger"></span>
 						</div>
+						<br />
 						<div class="text-center">
-							<p>
-								<a id="forgot-password" asp-page="./ForgotPassword" style="color: black;">¿Olvidaste la Contraseña?</a>
-							</p>
-						</div>
-						<div>
-							<button id="login-submit" type="submit" class="w-100 btn btn-lg" style="background-color: #B25A28; border-color: #B25A28; color: white;">Iniciar Sesión</button>
+							<button id="login-submit" type="submit" class="btn btn-lg mx-auto d-block" style="background-color: #B25A28; border-color: #B25A28; color: white; width: 50%;">Iniciar Sesión</button>
 						</div>
 						<br />
-						<div class="checkbox mb-3 text-center">
-							<label asp-for="Input.RememberMe" class="form-label" style="color: #B25A28;">
-								<input class="form-check-input" asp-for="Input.RememberMe" />
-								@Html.DisplayNameFor(m => m.Input.RememberMe)
-							</label>
-						</div>
 					</form>
 				</div>
 			</div>
