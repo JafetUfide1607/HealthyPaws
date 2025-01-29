@@ -35,6 +35,7 @@
     <thead class="color">
         <tr>
             <th class="text-white">@Html.DisplayNameFor(model => model.First().appointmentInventoryId)</th>
+            <th class="text-white">@Html.DisplayNameFor(model => model.First().Inventory.name)</th>
             <th class="text-white">@Html.DisplayNameFor(model => model.First().dose)</th>
             <th class="text-white">@Html.DisplayNameFor(model => model.First().measuredose)</th>
             <th class="text-white">@Html.DisplayNameFor(model => model.First().Inventory.brand)</th>
@@ -48,6 +49,7 @@
         {
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.appointmentInventoryId)</td>
+                <td>@Html.DisplayFor(modelItem => item.Inventory.name)</td>
                 <td>@Html.DisplayFor(modelItem => item.dose)</td>
                 <td>@Html.DisplayFor(modelItem => item.measuredose)</td>
                 <td>@Html.DisplayFor(modelItem => item.Inventory.brand)</td>
