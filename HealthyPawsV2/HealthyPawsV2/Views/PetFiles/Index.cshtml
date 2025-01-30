@@ -2,7 +2,7 @@
 
 
 <!--This is a Searh Bar to Look for the names of the Pets in case we want to find any specific of them-->
-<div class="row" style="text-align: center;">
+@* <div class="row" style="text-align: center;">
     <div class="col-md-6" style="margin: 0 auto;">
         <form asp-action="Index" method="get" class="form-inline">
             <div class="form-group mr-2">
@@ -22,9 +22,48 @@
         <button type="button" class="btn colorButton" data-bs-toggle="modal" data-bs-target="#AbrirExpediente">Abrir Expediente</button>
             }
     </div>
-        
-    
+    <div class= "col-md-6 text-end">
+        <label class="toggle-label" for="statusFilterPet">Mostrar:</label>
+        <select id="statusFilterPet" name="statusFilterPet" asp-for="@ViewData["statusFilterPet"]" class="form-select" onchange="this.form.submit()" style="display: inline-block; width: auto;">
+            <option value="active">Activos</option>
+            <option value="inactive">Inactivos</option>
+        </select>
+    </div>
+
+
+</div> *@
+<!-- Barra de búsqueda para buscar expedientes de mascotas -->
+<div class="row" style="text-align: center;">
+    <div class="col-md-6" style="margin: 0 auto;">
+        <form asp-action="Index" method="get" class="form-inline">
+            <div class="form-group mr-2">
+                <input type="text" id="searchPetFile" name="searchPetFile" class="form-control rounded-input" placeholder="Buscar expediente..." />
+            </div>
+        </form>
+    </div>
 </div>
+
+<!-- Botón para abrir un nuevo expediente y filtro de estado -->
+<div class="row">
+    <div class="col-md-6">
+        @if (User.Identity.IsAuthenticated && (RolesUtils.LoggedUserRole(User, "Admin") || RolesUtils.LoggedUserRole(User, "Vet")))
+        {
+            <button type="button" class="btn colorButton" data-bs-toggle="modal" data-bs-target="#AbrirExpediente">Abrir Expediente</button>
+        }
+    </div>
+    <div class="col-md-6 text-end">
+        <form asp-action="Index" method="get" class="form-inline">
+            <input type="hidden" name="searchPetFile" value="@ViewData["searchPetFile"]" />
+
+            <label class="toggle-label" for="statusFilterPet">Mostrar:</label>
+            <select id="statusFilterPet" name="statusFilterPet" class="form-select" onchange="this.form.submit()" style="display: inline-block; width: auto;">
+                <option value="active" selected="@(ViewData["statusFilterPet"]?.ToString() == "active" ? "selected" : null)">Activos</option>
+                <option value="inactive" selected="@(ViewData["statusFilterPet"]?.ToString() == "inactive" ? "selected" : null)">Inactivos</option>
+            </select>
+        </form>
+    </div>
+</div>
+
 <br />
 
 <!--Table with results of the Pets we have in the System-->
@@ -71,7 +110,10 @@
                         @if (User.Identity.IsAuthenticated && (RolesUtils.LoggedUserRole(User, "Admin") || RolesUtils.LoggedUserRole(User, "Vet")))
                         {
                             <a asp-action="Edit" asp-route-id="@item.petFileId" class="btn btn-primary btn-sm">Editar</a>
-                            <a class="btn btn-danger btn-sm BorrarElemento" data-estado="@item.status" asp-action="Delete" asp-route-id="@item.petFileId">Eliminar</a>
+                            @if ((string)ViewData["StatusFilterPet"] == "active")
+                            {
+                                <a class="btn btn-danger btn-sm BorrarElemento" data-estado="@item.status" asp-action="Delete" asp-route-id="@item.petFileId">Eliminar</a>
+                            }
                         }                      
                     </div>
 

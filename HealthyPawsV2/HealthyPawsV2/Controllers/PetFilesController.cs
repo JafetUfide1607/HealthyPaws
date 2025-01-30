@@ -9,6 +9,7 @@ using HealthyPawsV2.DAL;
 using Microsoft.AspNetCore.Identity;
 using HealthyPawsV2.Utils;
 using System.Security.Claims;
+using System.Drawing.Imaging;
 
 namespace HealthyPawsV2.Controllers
 {
@@ -26,7 +27,8 @@ namespace HealthyPawsV2.Controllers
         }
 
         // GET: PetFiles
-        public async Task<IActionResult> Index(string searchPetFile)
+        [HttpGet]
+        public async Task<IActionResult> Index(string searchPetFile, string statusFilterPet = "active") 
         {
             //Get logged user
             var userIdentity = User.Identity as ClaimsIdentity;
@@ -58,8 +60,20 @@ namespace HealthyPawsV2.Controllers
                 p.petFileId == parsedPetFileId);
             }
 
+            // Filter by status
+            if (statusFilterPet == "active")
+            {
+                pets = pets.Where(u => u.status == true);
+            }
+            else if (statusFilterPet == "inactive")
+            {
+                pets = pets.Where(u => u.status == false);
+            }
+
             var hpContext = await pets.ToListAsync();
+
             ViewBag.NoResultados = hpContext.Count == 0;
+            ViewData["statusFilterPet"] = statusFilterPet;
 
             //Properties for the Modal
             //Get users with "User" role for Dueño dropdown in create page
@@ -184,7 +198,7 @@ namespace HealthyPawsV2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("petFileId,petBreedId,idNumber,name,petTypeId,gender,age,weight,creationDate,vaccineHistory,castration,description,status")] PetFile petFile)
+        public async Task<IActionResult> Edit(int id, [Bind("petFileId,petBreedId,idNumber,name,petTypeId,gender,age,weight,creationDate,vaccineHistory,castration,description,status")] PetFile petFile, bool reactivePet)
         {
             if (id != petFile.petFileId)
             {
@@ -197,7 +211,19 @@ namespace HealthyPawsV2.Controllers
                 {
                     var originalPetfile = await _context.PetFiles.AsNoTracking().FirstOrDefaultAsync(m => m.petFileId == id);
 
+                    if (originalPetfile == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Mantener la fecha de creación
                     petFile.creationDate = originalPetfile.creationDate;
+
+                    // Reactivar la mascota si es necesario
+                    if (reactivePet && !originalPetfile.status)
+                    {
+                        petFile.status = true;
+                    }
 
                     _context.Update(petFile);
                     await _context.SaveChangesAsync();
@@ -214,11 +240,29 @@ namespace HealthyPawsV2.Controllers
             ViewData["petTypeId"] = new SelectList(_context.PetTypes, "petTypeId", "name", petFile.petTypeId);
             return View(petFile);
         }
+        //METODO PARA ELIMINAR COMPLETAMENTE
+        //// GET: PetFiles/Delete/5
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
+        //    var petFile = await _context.PetFiles.FirstOrDefaultAsync(m => m.petFileId == id);
+        //    if (petFile == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    _context.PetFiles.Remove(petFile);
+        //    await _context.SaveChangesAsync();
+
+        //    return RedirectToAction(nameof(Index));
+        //}
         // GET: PetFiles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            {
                 if (id == null)
                 {
                     return NotFound();
@@ -233,7 +277,7 @@ namespace HealthyPawsV2.Controllers
                 petfile.status = false;
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            
         }
 
         // POST: PetFiles/Delete/5
@@ -249,5 +293,6 @@ namespace HealthyPawsV2.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
     }
 }
