@@ -20,7 +20,8 @@ namespace HealthyPawsV2.Controllers
         }
 
         // GET: Inventories
-        public async Task<IActionResult> Index(string searchInventory)
+        [HttpGet]
+        public async Task<IActionResult> Index(string searchInventory, string statusFilterInventory = "active")
         {
             var inventaries =  _context.Inventories.AsQueryable();
             //       ViewData["inventarios"] = inventarios;
@@ -31,7 +32,19 @@ namespace HealthyPawsV2.Controllers
                 inventaries = inventaries.Where(p => p.name.Contains(searchInventory) ||p.provider.Contains(searchInventory) ||
                 p.category.Contains(searchInventory) ||p.inventoryId == parseditemId);
             }
+
+            // Filter by status
+            if (statusFilterInventory == "active")
+            {
+                inventaries = inventaries.Where(u => u.State == true);
+            }
+            else if (statusFilterInventory == "inactive")
+            {
+                inventaries = inventaries.Where(u => u.State == false);
+            }
+
             var hpContext = await inventaries.ToListAsync();
+            ViewData["statusFilterInventory"] = statusFilterInventory;
 
             if (hpContext.Count == 0)
             {
@@ -107,6 +120,7 @@ namespace HealthyPawsV2.Controllers
         }
 
         // GET: Inventories/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -125,7 +139,7 @@ namespace HealthyPawsV2.Controllers
         // POST: Inventories/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("inventoryId,name,category,brand,availableStock,description,price,provider,providerInfo,State")] Inventory inventory)
+        public async Task<IActionResult> Edit(int id, [Bind("inventoryId,name,category,brand,availableStock,description,price,provider,providerInfo,State")] Inventory inventory, bool reactiveInventory)
         {
             if (id != inventory.inventoryId)
             {
@@ -136,6 +150,18 @@ namespace HealthyPawsV2.Controllers
             {
                 try
                 {
+                    var originalInventory = await _context.Inventories.AsNoTracking().FirstOrDefaultAsync(i => i.inventoryId == id);
+
+                    if(originalInventory == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if(reactiveInventory && !originalInventory.State)
+                    {
+                        inventory.State = true;
+                    }
+
                     _context.Update(inventory);
                     await _context.SaveChangesAsync();
                 }

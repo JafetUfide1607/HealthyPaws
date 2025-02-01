@@ -13,7 +13,7 @@
     }
 </style>
 
-<!--This is a Searh Bar to Look for the names of the Pets in case we want to find any specific of them-->
+<!-- Barra de búsqueda para buscar medicamentos o productos en inventario -->
 <div class="row" style="text-align: center;">
     <div class="col-md-6" style="margin: 0 auto;">
         <form asp-action="Index" method="get" class="form-inline">
@@ -25,11 +25,26 @@
 </div>
 <p></p>
 
+
+<!-- Botón para agregar inventario y filtro de estado -->
 <div class="row">
     <div class="col-md-6">
         <button type="button" class="btn colorButton" data-bs-toggle="modal" data-bs-target="#AddInventory">Añadir Producto o Medicamento</button>
     </div>
+    <div class="col-md-6 text-end">
+        <form asp-action="Index" method="get" class="form-inline">
+        <input type="hidden" name="searchInventory" value="@ViewData["searchInventory"]" />
+
+        <label class="toggle-label" for="statusFilterInventory">Mostrar:</label>
+        <select id="statusFilterInventory" name="statusFilterInventory" class="form-select" onchange="this.form.submit()" style="display: inline-block; width: auto;">
+            <option value="active" selected="@(ViewData["statusFilterInventory"]?.ToString() == "active" ? "selected" : null)">Activos</option>
+            <option value="inactive" selected="@(ViewData["statusFilterInventory"]?.ToString() == "inactive" ? "selected" : null)">Inactivos</option>
+            </select>
+        </form>
+    </div>
 </div>
+
+
 <br />
 
 <table class="table table-bordered">
@@ -65,7 +80,10 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.inventoryId" class="btn btn-primary btn-sm">Editar</a>
                     <a asp-action="Details" asp-route-id="@item.inventoryId" class="btn btn-secondary btn-sm">Detalles</a>
-                    <a class="btn btn-danger btn-sm BorrarElemento" data-estado="@item.State" asp-action="Delete" asp-route-id="@item.inventoryId">Eliminar</a>
+                    @if ((string)ViewData["statusFilterInventory"] == "active")
+                    {
+                        <a class="btn btn-danger btn-sm BorrarElemento" data-estado="@item.State" asp-action="Delete" asp-route-id="@item.inventoryId">Eliminar</a>
+                    }
                 </td>
             </tr>
         }

@@ -17,17 +17,29 @@
     </div>
 </div>
 <br />
-<!--This is the Create button-->
-<div class="row ">
+
+
+<!-- Botón para agregar y filtro de estado -->
+<div class="row">
     <div class="col-md-6">
         @if (User.Identity.IsAuthenticated && (RolesUtils.LoggedUserRole(User, "Admin") || RolesUtils.LoggedUserRole(User, "Vet")))
         {
             <button type="button" class="btn colorButton" data-bs-toggle="modal" data-bs-target="#AgregarMedicinaEnCita">Agregar Medicamento en la Cita</button>
         }
     </div>
+    <div class="col-md-6 text-end">
+        <form asp-action="Index" method="get" class="form-inline">
+            <input type="hidden" name="searchInvApp" value="@ViewData["searchInvApp"]" />
 
-
+            <label class="toggle-label" for="statusFilterInvApp">Mostrar:</label>
+            <select id="statusFilterInvApp" name="statusFilterInvApp" class="form-select" onchange="this.form.submit()" style="display: inline-block; width: auto;">
+                <option value="active" selected="@(ViewData["statusFilterInvApp"]?.ToString() == "active" ? "selected" : null)">Activos</option>
+                <option value="inactive" selected="@(ViewData["statusFilterInvApp"]?.ToString() == "inactive" ? "selected" : null)">Inactivos</option>
+            </select>
+        </form>
+    </div>
 </div>
+
 <br />
 
 <!-- Tabla con resultados de inventario de citas -->
@@ -60,7 +72,10 @@
                     @if (User.Identity.IsAuthenticated && (RolesUtils.LoggedUserRole(User, "Admin") || RolesUtils.LoggedUserRole(User, "Vet")))
                     {
                         <a asp-action="Edit" asp-route-id="@item.appointmentInventoryId" class="btn btn-primary btn-sm">Editar</a>
-                        <a class="btn btn-danger btn-sm BorrarElemento" data-estado="@item.status" asp-action="Delete" asp-route-id="@item.appointmentInventoryId">Eliminar</a>
+                        @if ((string)ViewData["statusFilterInvApp"] == "active")
+                        {
+                            <a class="btn btn-danger btn-sm BorrarElemento" data-estado="@item.status" asp-action="Delete" asp-route-id="@item.appointmentInventoryId">Eliminar</a>
+                        }
                     }
                 </td>
             </tr>

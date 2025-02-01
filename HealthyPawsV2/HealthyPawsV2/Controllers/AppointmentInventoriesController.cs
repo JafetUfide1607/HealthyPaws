@@ -28,7 +28,8 @@ namespace HealthyPawsV2.Controllers
         }
 
         // GET: AppointmentInventories
-        public async Task<IActionResult> Index(string searchInvApp)
+        [HttpGet]
+        public async Task<IActionResult> Index(string searchInvApp, string statusFilterInvApp = "active")
         {
             //Get logged user
             var userIdentity = User.Identity as ClaimsIdentity;
@@ -53,7 +54,19 @@ namespace HealthyPawsV2.Controllers
                 int.TryParse(searchInvApp, out int parsedInvAppId);
                 invApp = invApp.Where(p => p.appointmentId == parsedInvAppId || p.inventoryID == parsedInvAppId || p.appointmentInventoryId == parsedInvAppId);
             }
+
+            // Filter by status
+            if (statusFilterInvApp == "active")
+            {
+                invApp = invApp.Where(u => u.status == true);
+            }
+            else if (statusFilterInvApp == "inactive")
+            {
+                invApp = invApp.Where(u => u.status == false);
+            }
+
             var hpContext = await invApp.ToListAsync();
+            ViewData["statusFilterInvApp"] = statusFilterInvApp;
 
             if (hpContext.Count == 0)
             {
@@ -133,6 +146,7 @@ namespace HealthyPawsV2.Controllers
         }
 
         // GET: AppointmentInventories/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -156,7 +170,7 @@ namespace HealthyPawsV2.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("appointmentInventoryId,appointmentId,inventoryID,dose,measuredose,status")] AppointmentInventory appointmentInventory)
+        public async Task<IActionResult> Edit(int id, [Bind("appointmentInventoryId,appointmentId,inventoryID,dose,measuredose,status")] AppointmentInventory appointmentInventory, bool reactiveInvApp)
         {
             if (id != appointmentInventory.appointmentInventoryId)
             {
@@ -167,6 +181,18 @@ namespace HealthyPawsV2.Controllers
             {
                 try
                 {
+                    var originalInvApp = await _context.AppointmentInventories.AsNoTracking().FirstOrDefaultAsync(i => i.appointmentInventoryId == id);
+
+                    if(originalInvApp == null)
+                    {
+                        return NotFound();
+                    }
+
+                    if(reactiveInvApp && !originalInvApp.status)
+                    {
+                        appointmentInventory.status = true;
+                    }
+
                     _context.Update(appointmentInventory);
                     await _context.SaveChangesAsync();
                 }
