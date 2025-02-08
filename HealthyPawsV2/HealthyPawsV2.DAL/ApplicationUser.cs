@@ -37,16 +37,16 @@ public class ApplicationUser : IdentityUser
     public string idNumber { get; set; }
 
     [Required]
-    [MaxLength(12)]
+    [MaxLength(8, ErrorMessage = "El teléfono debe tener 8 caracteres.")]
     [DisplayName("Telefono 1")]
     public string phone1 { get; set; }
 
- 
-    [MaxLength(12)]
+
+    [MaxLength(8, ErrorMessage = "El teléfono debe tener 8 caracteres.")]
     [DisplayName("Telefono 2")]
     public string phone2 { get; set; }
 
-    [MaxLength(12)]
+    [MaxLength(8, ErrorMessage = "El teléfono debe tener 8 caracteres.")]
     [DisplayName("Telefono 3")]
     public string phone3 { get; set; }
 
@@ -58,9 +58,13 @@ public class ApplicationUser : IdentityUser
     [DefaultValue(true)]
     public bool status { get; set; }
 
-
+    
     public string province { get; set; }
+
+    
     public string canton { get; set; }
+
+    
     public string district { get; set; }
 
     //public Direccion? Direccion { get; set; }  // Jalar direccion del usuario
