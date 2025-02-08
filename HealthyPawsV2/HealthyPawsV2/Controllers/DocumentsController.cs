@@ -177,6 +177,20 @@ namespace HealthyPawsV2.Controllers
                 return NotFound();
             }
 
+            ViewBag.Categorias = new List<string>
+    {
+        "Rayos X",
+        "Vacunación",
+        "Examen de Sangre",
+        "Cirugía",
+        "Esterilización",
+        "Consultas Veterinarias",
+        "Otro"
+    };
+
+            // Pasar la categoría seleccionada al ViewBag
+            ViewBag.CategoriaSeleccionada = document.category;
+
             ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId", document.petFileId);
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");

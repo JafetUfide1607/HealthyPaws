@@ -53,4 +53,27 @@ $('.CrearExamenBtn').click(function (event) {
 });
 
 
+$('.CancelarCita').click(function (event) {
+    event.preventDefault();
+    var url = $(this).attr('href');
+    var estadoCita = $(this).data('estado');
+
+    if (estadoCita !== 'Agendada') {
+        toastr.options.positionClass = 'toast-top-center';
+        toastr.info('La Cita que esta intentando cancelar  ya se encuentra cancelada.');
+        return;
+    }
+
+    if (confirm('¿Estás seguro de que deseas cancelar esta Cita?')) {
+        toastr.options.positionClass = 'toast-top-center';
+        toastr.success('Usted ha Cancelado la Cita Correctamente');
+        setTimeout(function () {
+            window.location.href = url;
+        }, 3000);
+    }
+
+
+});
+
+
 

@@ -309,10 +309,13 @@ namespace HealthyPawsV2.Controllers
                 return NotFound();
             }
 
-            return View(appointment);
+            appointment.status = "Cancelada";
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        // POST: Appointments/Delete/5
+        
+        // POST: Documents/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -321,12 +324,15 @@ namespace HealthyPawsV2.Controllers
             if (appointment != null)
             {
                 appointment.status = "Cancelada";
-                _context.Appointments.Update(appointment);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
+
+     
 
         private bool AppointmentExists(int id)
         {

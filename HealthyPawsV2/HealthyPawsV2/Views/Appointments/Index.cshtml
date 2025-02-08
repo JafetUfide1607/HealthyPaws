@@ -67,7 +67,9 @@
                         @if (User.Identity.IsAuthenticated && (RolesUtils.LoggedUserRole(User, "Admin") || RolesUtils.LoggedUserRole(User, "Vet")))
                         {
                             <a asp-action="Edit" asp-route-id="@item.AppointmentId" class="btn btn-primary btn-sm" >Editar</a>
-                            <a class="btn btn-danger btn-sm BorrarElemento" data-estado="@item.status" asp-action="Delete" asp-route-id="@item.AppointmentId">Eliminar</a>
+                            <a class="btn btn-danger btn-sm CancelarCita" data-estado="@item.status" asp-action="Delete" asp-route-id="@item.AppointmentId">Cancelar</a>
+                            
+
                         }
                     </div>
                 </td>
