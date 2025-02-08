@@ -44,16 +44,7 @@
                     @Html.DisplayNameFor(model => model.category)
                 </dt>
                 <dd class="col-sm-9">
-                    <select asp-for="category" class="form-control">
-                        <option value="">Selecciona una categoría</option>
-                        <option value="Examen de Sangre">Examen de Sangre</option>
-                        <option value="Rayos X">Rayos X</option>
-                        <option value="Consultas Veterinarias">Consultas Veterinarias</option>
-                        <option value="Cirugía">Cirugía</option>
-                        <option value="Vacunación">Vacunación</option>
-                        <option value="Esterilización">Esterilización</option>
-                        <option value="Otro">Otro</option>
-                    </select>
+                    <input asp-for="category" class="form-control" />
                     <span asp-validation-for="category" class="text-danger"></span>
                 </dd>
 
