@@ -35,7 +35,16 @@
 
             <div class="form-group">
                 <label asp-for="category" class="control-label"></label>
-                <input asp-for="category" class="form-control" />
+                <select asp-for="category" class="form-control">
+                    <option value="">Selecciona una categoría</option>
+                    <option value="Examen de Sangre">Examen de Sangre</option>
+                    <option value="Rayos X">Rayos X</option>
+                    <option value="Consultas Veterinarias">Consultas Veterinarias</option>
+                    <option value="Cirugía">Cirugía</option>
+                    <option value="Vacunación">Vacunación</option>
+                    <option value="Esterilización">Esterilización</option>
+                    <option value="Esterilización">Otro</option>
+                </select>
                 <span asp-validation-for="category" class="text-danger"></span>
             </div>
 

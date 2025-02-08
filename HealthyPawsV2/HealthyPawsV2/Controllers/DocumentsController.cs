@@ -177,6 +177,8 @@ namespace HealthyPawsV2.Controllers
                 return NotFound();
             }
 
+            
+
             ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId", document.petFileId);
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");
@@ -240,7 +242,7 @@ namespace HealthyPawsV2.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Volver a llenar ViewData en caso de error de validación
+            
             ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId", document.petFileId);
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");
