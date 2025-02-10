@@ -29,7 +29,7 @@ namespace HealthyPawsV2.Controllers
 
 		// GET: Documents
 		[HttpGet]
-		public async Task<IActionResult> Index(string documentSearch, string fileTypeFilter)
+		public async Task<IActionResult> Index(string documentSearch, string fileTypeFilter, string statusFilterDoc = "active")
         {
             //Get logged user
             var userIdentity = User.Identity as ClaimsIdentity;
@@ -68,9 +68,29 @@ namespace HealthyPawsV2.Controllers
                 );
             }
 
-            var documentResult = await documents.ToListAsync();
+            // Filter by status
+            if (statusFilterDoc == "active")
+            {
+                documents = documents.Where(u => u.status == true);
+            }
+            else if (statusFilterDoc == "inactive")
+            {
+                documents = documents.Where(u => u.status == false);
+            }
 
-			ViewData["AppointmentId"] = new SelectList(
+            var hpContext = await documents.ToListAsync();
+            ViewData["statusFilterDoc"] = statusFilterDoc;
+
+            if (hpContext.Count == 0)
+            {
+                ViewBag.NoResultados = true;
+            }
+            else
+            {
+                ViewBag.NoResultados = false;
+            }
+
+            ViewData["AppointmentId"] = new SelectList(
             from appointment in _context.Appointments
             join petFile in _context.PetFiles on appointment.petFileId equals petFile.petFileId
             join user in _context.ApplicationUser on petFile.ownerId equals user.Id
@@ -101,7 +121,7 @@ namespace HealthyPawsV2.Controllers
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");
             ViewData["FileTypeFilter"] = fileTypeFilter;
 
-            return View(documentResult);
+            return View(hpContext);
         }
 
         // GET: Documents/Details/5
@@ -302,7 +322,7 @@ namespace HealthyPawsV2.Controllers
                 _context.Documents.Remove(document);
             }
 
-			document.status = false;
+			
 			await _context.SaveChangesAsync();
 			return RedirectToAction(nameof(Index));
 		}

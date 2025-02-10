@@ -69,6 +69,10 @@
                 <option value="pdf">PDFs</option>
                 <option value="word">Documentos Word</option>
             </select>
+            <select id="statusFilterDoc" name="statusFilterDoc" class="form-select" onchange="this.form.submit()" style="display: inline-block; width: auto;">
+                <option value="active" selected="@(ViewData["statusFilterInventory"]?.ToString() == "active" ? "selected" : null)">Activos</option>
+                <option value="inactive" selected="@(ViewData["statusFilterInventory"]?.ToString() == "inactive" ? "selected" : null)">Inactivos</option>
+            </select>
         </form>
     </div>
 </div>
@@ -150,11 +154,14 @@
                 <td>@Html.DisplayFor(modelItem => item.status)</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.documentId" class="btn btn-secondary btn-sm">Detalles</a>
+                    @if ((string)ViewData["statusFilterDoc"] == "active")
+                    {
+                        <a class="btn btn-danger btn-sm BorrarElemento" data-estado="@item.status" asp-action="Delete" asp-route-id="@item.documentId">Eliminar</a>
+                    }
 
                     @if (User.Identity.IsAuthenticated && (RolesUtils.LoggedUserRole(User, "Admin") || RolesUtils.LoggedUserRole(User, "Vet")))
                     {
                         <a asp-action="Edit" asp-route-id="@item.documentId" class="btn btn-primary btn-sm">Editar</a>
-                        <a class="btn btn-danger btn-sm BorrarElemento" data-estado="@item.status" asp-action="Delete" asp-route-id="@item.documentId">Eliminar</a>
                     }
                 </td>
             </tr>
