@@ -64,7 +64,7 @@ public class ApplicationUser : IdentityUser
     
     public string canton { get; set; }
 
-    
+   
     public string district { get; set; }
 
     //public Direccion? Direccion { get; set; }  // Jalar direccion del usuario

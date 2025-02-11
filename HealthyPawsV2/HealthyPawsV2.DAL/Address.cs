@@ -16,16 +16,16 @@ namespace HealthyPawsV2.DAL
         public int AddressId { get; set; }
 
         [DisplayName("Provincia")]
-        [Required]
+        [Required(ErrorMessage="Seleccione una Provincia")]
         public string province { get; set; }
 
         [DisplayName("Canton")]
-        [Required]
+        [Required(ErrorMessage = "Seleccione un Canton")]
         public string canton { get; set; }
 
 
         [DisplayName("Distrito")]
-        [Required]
+        [Required(ErrorMessage = "Seleccione un Distrito")]
         public string district { get; set; }
 
 

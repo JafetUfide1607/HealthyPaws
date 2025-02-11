@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using HealthyPawsV2.Utils;
 using System.Security.Claims;
 using System.Drawing;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace HealthyPawsV2.Controllers
 {
@@ -262,6 +263,33 @@ namespace HealthyPawsV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,petFileId,vetId,ownerId,documentId,Date,description,status,diagnostic,Additional")] Appointment appointment)
         {
+
+            // Validación: No se permiten citas antes de las 7am o después de las 6pm, de lunes a sábado. Domingos no hay citas.
+            //bool EsDomingo(DateTime fecha) => fecha.DayOfWeek == DayOfWeek.Sunday;
+            //bool EsHorarioLaboral(DateTime fecha) =>
+            //    fecha.TimeOfDay >= TimeSpan.FromHours(7) && fecha.TimeOfDay <= TimeSpan.FromHours(18);
+
+            //if (EsDomingo(appointment.Date) || !EsHorarioLaboral(appointment.Date))
+            //{
+            //    ModelState.AddModelError("Date", "No se pueden programar citas los días Domingo ni los días de Lunes a Sábado antes de las 7 am y después de las 6 pm");
+            //}
+
+            //// Validación: Verificar si el veterinario ya tiene una cita en el mismo horario
+            //var existingAppointment = await _context.Appointments
+            //    .Where(a => a.vetId == appointment.vetId && a.Date == appointment.Date)
+            //    .FirstOrDefaultAsync();
+
+            //if (existingAppointment != null)
+            //{
+            //    ModelState.AddModelError("Date", "El veterinario ya tiene una cita asignada en el mismo horario");
+            //}
+
+            //// Validación de fecha en el pasado
+            //if (appointment.Date < DateTime.Now)
+            //{
+            //    ModelState.AddModelError("Date", "La fecha de la cita no puede ser anterior a la fecha actual");
+            //}
+
 
             if (id != appointment.AppointmentId)
             {
