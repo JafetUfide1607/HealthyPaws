@@ -24,24 +24,18 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="ownerId" class="control-label"></label>
-                <select asp-for="ownerId" class="form-control" asp-items="ViewBag.Owners">
-                    <option value="" disabled selected>Seleccione al Dueño</option>
-                </select>
-                <span asp-validation-for="ownerId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
                 <label asp-for="petTypeId" class="control-label">Tipo de Mascota</label>
-                <select asp-for="petTypeId" class="form-control" asp-items="ViewBag.petTypeId"></select>
+                <select asp-for="petTypeId" id="petTypeId" class="form-control" asp-items="ViewBag.petTypeId"></select>
                 <span asp-validation-for="petTypeId" class="text-danger"></span>
             </div>
 
+
             <div class="form-group">
-                <label asp-for="petBreedId" class="control-label"></label>
-                <select asp-for="petBreedId" class="form-control" asp-items="ViewBag.petBreedId"></select>
+                <label asp-for="petBreedId" class="control-label">Raza de Mascota</label>
+                <select asp-for="petBreedId" id="petBreedId" class="form-control" asp-items="ViewBag.petBreedId"></select>
                 <span asp-validation-for="petBreedId" class="text-danger"></span>
             </div>
+
 
             <div class="form-group">
                 <label asp-for="gender" class="control-label"></label>
@@ -102,4 +96,41 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#petTypeId").change(function () {
+                var petTypeId = $(this).val();
+                var selectedBreedId = '@Model.petBreedId'; // Raza previa
+
+                //limpia la raza sino esta nada seleccionado
+                if (!petTypeId) {
+                    $("#petBreedId").html('<option value="" disabled selected>Seleccione la Raza de la Mascota</option>');
+                    return;
+                }
+
+                // Obtiene las razas filtradas cuando se selecciona un tipo 
+                $.ajax({
+                    url: '@Url.Action("GetBreedsByType", "PetFiles")',
+                    type: 'GET',
+                    data: { petTypeId: petTypeId },
+                    success: function (data) {
+                        var petBreedDropdown = $("#petBreedId");
+                        petBreedDropdown.empty();
+                        petBreedDropdown.append('<option value="" disabled selected>Seleccione la Raza de la Mascota</option>');
+
+                        $.each(data, function (index, item) {
+                            petBreedDropdown.append($('<option>', {
+                                value: item.petBreedId,
+                                text: item.name,
+                                selected: item.petBreedId == selectedBreedId // Mantiene la selección
+                            }));
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 }
+

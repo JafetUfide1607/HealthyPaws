@@ -167,27 +167,23 @@
 
                             <div class="form-group">
                                 <label for="petTypeId">Tipo de Mascota</label>
-                                <select name="petTypeId" class="form-control" required>
+                                <select name="petTypeId" id="petTypeId" class="form-control" required>
                                     <option value="" disabled selected>Seleccione el Tipo de Mascota</option>
                                     @foreach (var petType in ViewBag.PetTypes)
                                     {
                                         <option value="@petType.Value">@petType.Text</option>
                                     }
                                 </select>
-                                
                             </div>
+
 
                             <div class="form-group">
                                 <label for="petBreedId">Raza de la Mascota</label>
-                                <select name="petBreedId" class="form-control" required>
+                                <select name="petBreedId" id="petBreedId" class="form-control" required>
                                     <option value="" disabled selected>Seleccione la Raza de la Mascota</option>
-                                    @foreach (var petBreed in ViewBag.PetBreeds)
-                                    {
-                                        <option value="@petBreed.Value">@petBreed.Text</option>
-                                    }
                                 </select>
-                                
                             </div>
+
 
                             <div class="form-group">
                                 <label for="gender">Género</label>
@@ -252,6 +248,38 @@
 
 
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#petTypeId").change(function () {
+            var petTypeId = $(this).val();
 
+            // Si no hay nada seleccionado, limpiar el select de razas mascota
+            if (!petTypeId) {
+                $("#petBreedId").html('<option value="" disabled selected>Seleccione la Raza de la Mascota</option>');
+                return;
+            }
+
+            // Hacer el request por AJAX para obtener las razas basado en el tipo de mascota seleccionado
+            $.ajax({
+                url: '@Url.Action("GetBreedsByType", "PetFiles")',
+                type: 'GET',
+                data: { petTypeId: petTypeId },
+                success: function (data) {
+                    var petBreedDropdown = $("#petBreedId");
+                    petBreedDropdown.empty();
+                    petBreedDropdown.append('<option value="" disabled selected>Seleccione la Raza de la Mascota</option>');
+
+                    $.each(data, function (index, item) {
+                        petBreedDropdown.append($('<option>', {
+                            value: item.petBreedId,
+                            text: item.name
+                        }));
+                    });
+                }
+            });
+        });
+    });
+</script>
 
 

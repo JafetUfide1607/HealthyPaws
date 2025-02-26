@@ -158,12 +158,26 @@ namespace HealthyPawsV2.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-           // ViewData["petBreedId"] = new SelectList(_context.PetBreeds, "petBreedId", "name", petFile.petBreedId);
-            ViewData["petBreedId"] = new SelectList(_context.PetBreeds.Where(t => t.petTypeId == petFile.petTypeId), "petBreedId", "name", petFile.petBreedId);
+
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "name", petFile.Owner);
             ViewData["petTypeId"] = new SelectList(_context.PetTypes, "petTypeId", "name", petFile.petTypeId);
+            ViewData["petBreedId"] = new SelectList(new List<SelectListItem>());
+
+
             return View(petFile);
         }
+
+        //GET Raza y luego se transforma a JSON
+        public JsonResult GetBreedsByType(int petTypeId)
+        {
+            var breeds = _context.PetBreeds
+                .Where(b => b.petTypeId == petTypeId)
+                .Select(b => new { b.petBreedId, b.name })
+                .ToList();
+
+            return Json(breeds);
+        }
+
 
         // GET: PetFiles/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -220,10 +234,15 @@ namespace HealthyPawsV2.Controllers
                     petFile.creationDate = originalPetfile.creationDate;
 
                     // Reactivar la mascota si es necesario
-                    if (reactivePet && !originalPetfile.status)
+                    if (reactivePet)
                     {
-                        petFile.status = true;
+                        petFile.status = true; // Cambiar el estado a "reactivado"
                     }
+                    else
+                    {
+                        petFile.status = originalPetfile.status; // Mantener el estado original si no se marca el checkbox
+                    }
+
 
                     _context.Update(petFile);
                     await _context.SaveChangesAsync();
@@ -235,32 +254,12 @@ namespace HealthyPawsV2.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["petBreedId"] = new SelectList(_context.PetBreeds, "petBreedId", "name", petFile.petBreedId);
+            ViewData["petBreedId"] = new SelectList(_context.PetBreeds.Where(b => b.petTypeId == petFile.petTypeId), "petBreedId", "name", petFile.petBreedId);
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "name", petFile.Owner);
             ViewData["petTypeId"] = new SelectList(_context.PetTypes, "petTypeId", "name", petFile.petTypeId);
             return View(petFile);
         }
-        //METODO PARA ELIMINAR COMPLETAMENTE
-        //// GET: PetFiles/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var petFile = await _context.PetFiles.FirstOrDefaultAsync(m => m.petFileId == id);
-        //    if (petFile == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.PetFiles.Remove(petFile);
-        //    await _context.SaveChangesAsync();
-
-        //    return RedirectToAction(nameof(Index));
-        //}
-        // GET: PetFiles/Delete/5
+      
         public async Task<IActionResult> Delete(int? id)
         {
                 if (id == null)
