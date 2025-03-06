@@ -42,7 +42,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" id="fechaCita" name="Fecha" class="form-control" />
+                <input asp-for="Date" class="form-control" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
 
@@ -181,9 +181,24 @@
                             </div>
 
 
-                            <div class="form-group">
+@*                             <div class="form-group">
                                 <label for="category">Categoría</label>
                                 <input type="text" id="category" name="category" class="form-control" />
+                                <span class="text-danger" id="categoryError"></span>
+                            </div>
+ *@
+                            <div class="form-group">
+                                <label for="category">Categoría</label>
+                                <select id="category" name="category" class="form-control">
+                                    <option value="">Selecciona una categoría</option>
+                                    <option value="Rayos X">Rayos X</option>
+                                    <option value="Vacunación">Vacunación</option>
+                                    <option value="Examen de Sangre">Examen de Sangre</option>
+                                    <option value="Cirugía">Cirugía</option>
+                                    <option value="Esterilización">Esterilización</option>
+                                    <option value="Consultas Veterinarias">Consultas Veterinarias</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
                                 <span class="text-danger" id="categoryError"></span>
                             </div>
 

@@ -57,9 +57,7 @@ namespace HealthyPawsV2.Controllers
                 appointments = appointments.Where(a =>
                     a.AppointmentId.ToString().Contains(searchAppointment) ||
                     a.PetFile.name.Contains(searchAppointment) ||
-                    a.owner.UserName.Contains(searchAppointment) ||
-                    a.vet.UserName.Contains(searchAppointment)
-                );
+                    a.owner.name.Contains(searchAppointment)                 );
             }
 
             var appointmentList = await appointments.ToListAsync();
@@ -75,11 +73,11 @@ namespace HealthyPawsV2.Controllers
 
             ViewData["Pets"] = new SelectList(
             from pet in _context.PetFiles
-            join user in _context.ApplicationUser on pet.ownerId equals user.Id 
+            join user in _context.ApplicationUser on pet.ownerId equals user.Id
             select new
             {
-            Id = pet.petFileId,
-            DisplayName = $"{pet.name} - {user.name} {user.surnames} - {user.idNumber}"
+                Id = pet.petFileId,
+                DisplayName = $"{pet.name} - {user.name} {user.surnames} - {user.idNumber}"
             },
             "Id",
             "DisplayName"
@@ -92,7 +90,7 @@ namespace HealthyPawsV2.Controllers
             var ownerList = owners.Select(user => new
             {
                 Id = user.Id,
-                DisplayName = $"{user.name} {user.surnames} - {user.idNumber}" 
+                DisplayName = $"{user.name} {user.surnames} - {user.idNumber}"
             }).ToList();
             ViewData["Owners"] = new SelectList(ownerList, "Id", "DisplayName");
 
@@ -104,7 +102,7 @@ namespace HealthyPawsV2.Controllers
             var vetList = vets.Select(vet => new
             {
                 Id = vet.Id,
-                DisplayName = $"{vet.name} {vet.surnames} - {vet.idNumber}" 
+                DisplayName = $"{vet.name} {vet.surnames} - {vet.idNumber}"
             }).ToList();
             ViewData["Vets"] = new SelectList(vetList, "Id", "DisplayName");
 
@@ -343,7 +341,7 @@ namespace HealthyPawsV2.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
+
         // POST: Documents/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -361,7 +359,7 @@ namespace HealthyPawsV2.Controllers
 
 
 
-     
+
 
         private bool AppointmentExists(int id)
         {
@@ -381,7 +379,7 @@ namespace HealthyPawsV2.Controllers
                 _context.Add(appointmentInventory);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Edit), new { id = appointmentInventory.appointmentId });
-                
+
             }
 
             // ViewData["inventoryID"] = new SelectList(_context.Inventories, "inventoryId", "name", appointmentInventory.inventoryID);
