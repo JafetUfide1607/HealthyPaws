@@ -161,6 +161,10 @@ namespace HealthyPawsV2.Controllers
                     {
                         inventory.State = true;
                     }
+                    else
+                    {
+                        inventory.State = originalInventory.State;
+                    }
 
                     _context.Update(inventory);
                     await _context.SaveChangesAsync();
