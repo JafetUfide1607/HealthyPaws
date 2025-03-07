@@ -212,7 +212,7 @@ namespace HealthyPawsV2.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("petFileId,petBreedId,idNumber,name,petTypeId,gender,age,weight,creationDate,vaccineHistory,castration,description,status")] PetFile petFile, bool reactivePet)
+        public async Task<IActionResult> Edit(int id, [Bind("petFileId,petBreedId,ownerId,name,petTypeId,gender,age,weight,creationDate,vaccineHistory,castration,description,status")] PetFile petFile, bool reactivePet)
         {
             if (id != petFile.petFileId)
             {
@@ -232,6 +232,9 @@ namespace HealthyPawsV2.Controllers
 
                     // Mantener la fecha de creación
                     petFile.creationDate = originalPetfile.creationDate;
+
+                    // Mantener el dueño original si no se está modificando en la vista
+                    petFile.ownerId = originalPetfile.ownerId;
 
                     // Reactivar la mascota si es necesario
                     if (reactivePet)

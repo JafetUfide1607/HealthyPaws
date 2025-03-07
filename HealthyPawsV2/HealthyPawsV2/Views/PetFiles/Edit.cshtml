@@ -63,7 +63,12 @@
 
             <div class="form-group">
                 <label asp-for="castration" class="control-label"></label>
-                <input asp-for="castration" class="form-control" />
+                <select asp-for="castration" class="form-control">
+                    <option value="" disabled selected>Seleccione el tipo de Castración</option>
+                    <option value="No">No</option>
+                    <option value="Ovariohisterectomía">Ovariohisterectomía</option>
+                    <option value="Orquiectomía">Orquiectomía</option>
+                </select>
                 <span asp-validation-for="castration" class="text-danger"></span>
             </div>
 
