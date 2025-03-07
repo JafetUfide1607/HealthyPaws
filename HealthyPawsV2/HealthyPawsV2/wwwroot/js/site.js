@@ -72,6 +72,8 @@ $('.CancelarCita').click(function (event) {
         }, 3000);
     }
 
+    
+
 
 });
 

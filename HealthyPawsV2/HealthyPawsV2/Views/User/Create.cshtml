@@ -2,6 +2,7 @@
 @model HealthyPawsV2.DAL.ApplicationUser
 
 
+
 @{
 	ViewData["Title"] = "Crear";
 }
@@ -60,13 +61,13 @@
 
 			<div class="form-group">
 				<label asp-for="Email" class="control-label"></label>
-				<input asp-for="Email" class="form-control" required/>
+				<input asp-for="Email" id="emailInput" class="form-control" required onblur="validarCorreo()" />
 				<span asp-validation-for="Email" class="text-danger"></span>
 			</div>
 
 			<div class="form-group">
 				<label for="province">Provincia</label>
-				<select id="province" class="form-control" asp-for="province">
+				<select id="province" class="form-control" asp-for="province" required>
 					<option value="">Seleccione una provincia</option>
 				</select>
 				@* <span id="province-error" class="text-danger" style="display:none;"></span>  *@
@@ -75,16 +76,17 @@
 
 			<div class="form-group">
 				<label for="canton">Cantón</label>
-				<select id="canton" class="form-control" asp-for="canton" disabled>
+				<select id="canton" class="form-control" asp-for="canton" disabled required/>
 					<option value="">Seleccione un cantón</option>
 				</select>
 				@* <span id="canton-error" class="text-danger" style="display:none;"></span>  *@
 				<span asp-validation-for="canton" class="text-danger"></span>
 			</div>
 
+
 			<div class="form-group">
 				<label for="district">Distrito</label>
-				<select id="district" class="form-control" asp-for="district" disabled>
+				<select id="district" class="form-control" asp-for="district" disabled required>
 					<option value="">Seleccione un distrito</option>
 				</select>
 				@* <span id="district-error" class="text-danger" style="display:none;"></span> *@
@@ -127,7 +129,13 @@
 @* This is an script that helps finding the Name and surnames of the person who is being registered to the system, it calls an API Web *@
 @* This Script reads the amount of caracters in the idNumber field and validate if they are 9 to get the National IDs *@
 @section Scripts {
+	
+
+
+
+
 	<script>
+
 		document.getElementById('idNumber').addEventListener('input', function () {
 			var cedula = document.getElementById('idNumber').value;
 			if (cedula.length === 9 && document.getElementById('idType').value === "Nacional") {
@@ -263,76 +271,6 @@
 
 
 
-		// Esto es para prueba de address
-		// fetch('/api/ubicaciones/provincias')
-		// 	.then(response => response.json())
-		// 	.then(data => {
-		// 		const provinceSelect = document.getElementById('province');
-		// 		for (const [id, name] of Object.entries(data)) {
-		// 			const option = document.createElement('option');
-		// 			option.value = id;
-		// 			option.textContent = name;
-		// 			provinceSelect.appendChild(option);
-		// 		}
-		// 	});
-
-		// // We load the Provinces here
-		// document.getElementById('province').addEventListener('change', function () {
-		// 	const provinceId = this.value;
-		// 	const selectedOption = this.options[this.selectedIndex];
-		// 	selectedProvinceName = selectedOption.textContent;
-
-
-		// 	document.getElementById('provinceName').value = selectedProvinceName;
-			
-		// 	fetch(`/api/ubicaciones/provincias/${provinceId}/cantones`)
-		// 		.then(response => response.json())
-		// 		.then(data => {
-		// 			const cantonSelect = document.getElementById('canton');
-		// 			cantonSelect.innerHTML = '<option value="">Seleccione un cantón</option>';
-		// 			for (const [id, name] of Object.entries(data)) {
-		// 				const option = document.createElement('option');
-		// 				option.value = id;
-		// 				option.textContent = name;
-		// 				cantonSelect.appendChild(option);
-		// 			}
-		// 			cantonSelect.disabled = false;
-		// 			document.getElementById('district').innerHTML = '<option value="">Seleccione un distrito</option>';
-		// 			document.getElementById('district').disabled = true;
-		// 		});
-		// });
-
-		// We load the canton details here
-		// document.getElementById('canton').addEventListener('change', function () {
-		// 	const provinceId = document.getElementById('province').value;
-		// 	const cantonId = this.value;
-		// 	const selectedOption = this.options[this.selectedIndex];
-		// 	selectedCantonName = selectedOption.textContent;
-
-
-		// 	document.getElementById('cantonName').value = selectedCantonName;
-
-		// 	fetch(`/api/ubicaciones/provincias/${provinceId}/canton/${cantonId}/distritos`)
-		// 		.then(response => response.json())
-		// 		.then(data => {
-		// 			const districtSelect = document.getElementById('district');
-		// 			districtSelect.innerHTML = '<option value="">Seleccione un distrito</option>';
-		// 			for (const [id, name] of Object.entries(data)) {
-		// 				const option = document.createElement('option');
-		// 				option.value = id;
-		// 				option.textContent = name;
-		// 				districtSelect.appendChild(option);
-		// 			}
-		// 			districtSelect.disabled = false;
-		// 		});
-		// });
-
-		// document.getElementById('district').addEventListener('change', function () {
-		// 	const selectedOption = this.options[this.selectedIndex];
-		// 	selectedDistrictName = selectedOption.textContent;
-
-		// 	document.getElementById('districtName').value = selectedDistrictName;
-		// });
 
 
 	</script>
