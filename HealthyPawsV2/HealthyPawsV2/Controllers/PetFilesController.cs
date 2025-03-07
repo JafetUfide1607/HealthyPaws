@@ -51,14 +51,18 @@ namespace HealthyPawsV2.Controllers
                     .AsQueryable();
             }
 
-            //This the Search Bar
-            if (!string.IsNullOrEmpty(searchPetFile))
+            //This is the Search Bar
+            if (!string.IsNullOrWhiteSpace(searchPetFile))
             {
-                int.TryParse(searchPetFile, out int parsedPetFileId);
-                pets = pets.Where(p => p.name.Contains(searchPetFile) || 
-                p.Owner.name.Contains(searchPetFile) || 
-                p.petFileId == parsedPetFileId);
+                string normalizedSearch = searchPetFile.Trim().ToLower(); // Normalizar entrada
+
+                int.TryParse(normalizedSearch, out int parsedPetFileId);
+
+                pets = pets.Where(p => p.name.ToLower().Contains(normalizedSearch) ||
+                                       p.Owner.name.ToLower().Contains(normalizedSearch) ||
+                                       p.petFileId == parsedPetFileId);
             }
+
 
             // Filter by status
             if (statusFilterPet == "active")
