@@ -65,12 +65,19 @@ namespace HealthyPawsV2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("contactId,Email,Phone,WhatsApp")] Contact contact)
         {
+            // Validation to have at least one filled field.
+            if (string.IsNullOrWhiteSpace(contact.Email) && string.IsNullOrWhiteSpace(contact.Phone))
+            {
+                ModelState.AddModelError("", "Debe ingresar al menos un correo electrónico o un número de teléfono.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(contact);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(contact);
         }
 
@@ -100,6 +107,12 @@ namespace HealthyPawsV2.Controllers
             if (id != contact.contactId)
             {
                 return NotFound();
+            }
+
+            // Validation to have at least one filled field.
+            if (string.IsNullOrWhiteSpace(contact.Email) && string.IsNullOrWhiteSpace(contact.Phone))
+            {
+                ModelState.AddModelError("", "Debe ingresar al menos un correo electrónico o un número de teléfono.");
             }
 
             if (ModelState.IsValid)

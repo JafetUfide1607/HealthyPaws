@@ -14,9 +14,12 @@ namespace HealthyPawsV2.DAL
     {
         [Key]
         public int contactId { get; set; }
+
         [DisplayName("Correo Electrónico")]
+        [EmailAddress(ErrorMessage = "Ingrese un correo electrónico válido.")]
         public string Email { get; set; }
         [DisplayName("Número de Teléfono")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "El número de teléfono debe ser de 8 dígitos.")]
         public string Phone{ get; set; }
         public bool WhatsApp { get; set; }
     }

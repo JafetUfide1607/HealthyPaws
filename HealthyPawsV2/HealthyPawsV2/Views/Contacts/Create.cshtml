@@ -17,13 +17,18 @@
 
             <div class="form-group">
                 <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
+                <input asp-for="Email" class="form-control" type="email" placeholder="ejemplo@mail.com" data-val="true"
+                       data-val-email="Ingrese un correo electrónico válido." />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
+                <input asp-for="Phone" class="form-control" type="text"
+                       placeholder="8888-8888" pattern="\d{8}"
+                       maxlength="8"
+                       data-val="true"
+                       data-val-regex="El número de teléfono debe contener exactamente 8 dígitos." />
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
 
