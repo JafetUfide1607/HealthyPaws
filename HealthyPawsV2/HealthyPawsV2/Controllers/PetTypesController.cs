@@ -19,7 +19,8 @@ namespace HealthyPawsV2.Controllers
         }
 
         // GET: PetTypes
-        public async Task<IActionResult> Index(string searchPetType)
+        [HttpGet]
+        public async Task<IActionResult> Index(string searchPetType, string statusFilterPetType = "active")
         {
             var petType = _context.PetTypes.AsQueryable();
 
@@ -28,14 +29,30 @@ namespace HealthyPawsV2.Controllers
                 petType = petType.Where(m => m.name.Contains(searchPetType));
             }
 
-            var hpcontext = await petType.ToListAsync();
+            // Filter by status
+            if (statusFilterPetType == "active")
+            {
+                petType = petType.Where(u => u.status == true);
+            }
+            else if (statusFilterPetType == "inactive")
+            {
+                petType = petType.Where(u => u.status == false);
+            }
 
-            ViewBag.NoResultados = hpcontext.Count == 0;
+            var hpContext = await petType.ToListAsync();
+            ViewData["searchPetType"] = searchPetType;
+            ViewData["statusFilterPetType"] = statusFilterPetType;
 
-            //ViewBag for the Model
-            ViewBag.NewPetType = new PetType();
+            if (hpContext.Count == 0)
+            {
+                ViewBag.NoResultados = true;
+            }
+            else
+            {
+                ViewBag.NoResultados = false;
+            }
 
-            return View(hpcontext);
+            return View(hpContext);
         }
 
 

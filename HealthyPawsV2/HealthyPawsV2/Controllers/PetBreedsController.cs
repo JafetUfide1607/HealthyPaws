@@ -19,23 +19,41 @@ namespace HealthyPawsV2.Controllers
         }
 
         // GET: PetBreeds
-        public async Task<IActionResult> Index(string searchPetBreed)
+        public async Task<IActionResult> Index(string searchPetBreed, string statusFilterPetBreed = "active")
         {
-            var petBreedsQuery = _context.PetBreeds
-                .Include(r => r.PetType)
-                .AsQueryable();
+            var petBreed = _context.PetBreeds.AsQueryable();
 
             if (!string.IsNullOrEmpty(searchPetBreed))
             {
-                petBreedsQuery = petBreedsQuery.Where(m => m.name.Contains(searchPetBreed));
+                petBreed = petBreed.Where(m => m.name.Contains(searchPetBreed));
             }
 
-            var petBreeds = await petBreedsQuery.ToListAsync();
+            // Filter by status
+            if (statusFilterPetBreed == "active")
+            {
+                petBreed = petBreed.Where(u => u.status == true);
+            }
+            else if (statusFilterPetBreed == "inactive")
+            {
+                petBreed = petBreed.Where(u => u.status == false);
+            }
 
-            ViewBag.PetTypes = await _context.PetTypes.ToListAsync();
-            ViewBag.NoResultados = petBreeds.Count == 0;
+            var hpContext = await petBreed.ToListAsync();
+            //Enlistar solo tipos de animales que se encuentren activos
+            ViewBag.PetTypes = await _context.PetTypes.Where(pt => pt.status == true).ToListAsync();
+            ViewData["searchPetBreed"] = searchPetBreed;
+            ViewData["statusFilterPetBreed"] = statusFilterPetBreed;
 
-            return View(petBreeds);
+            if (hpContext.Count == 0)
+            {
+                ViewBag.NoResultados = true;
+            }
+            else
+            {
+                ViewBag.NoResultados = false;
+            }
+
+            return View(hpContext);
         }
 
         // GET: PetBreeds/Details/5

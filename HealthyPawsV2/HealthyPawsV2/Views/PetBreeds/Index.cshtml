@@ -18,6 +18,17 @@
     <div class="col-md-6">
         <button type="button" class="btn  colorButton" data-bs-toggle="modal" data-bs-target="#AñadirRaza">Añadir Raza de Mascota</button>
     </div>
+    <div class="col-md-6 text-end">
+        <form asp-action="Index" method="get" class="form-inline">
+            <input type="hidden" name="searchPetBreed" value="@ViewData["searchPetBreed"]" />
+
+            <label class="toggle-label" for="statusFilterPetBreed">Mostrar:</label>
+            <select id="statusFilterPetBreed" name="statusFilterPetBreed" class="form-select" onchange="this.form.submit()" style="display: inline-block; width: auto;">
+                <option value="active" selected="@(ViewData["statusFilterPetBreed"]?.ToString() == "active" ? "selected" : null)">Activos</option>
+                <option value="inactive" selected="@(ViewData["statusFilterPetBreed"]?.ToString() == "inactive" ? "selected" : null)">Inactivos</option>
+            </select>
+        </form>
+    </div>
 </div>
 <br />
 
