@@ -49,10 +49,29 @@ namespace HealthyPawsV2.Controllers
                     .AsQueryable();
             }
 
-            if (!string.IsNullOrEmpty(documentSearch))
-			{
-				documents = documents.Where(m => m.name.Contains(documentSearch));
-			}
+         
+
+            if (!string.IsNullOrWhiteSpace(documentSearch))
+            {
+                documentSearch = documentSearch.Trim();
+
+                if (int.TryParse(documentSearch, out int idSearch))
+                {
+                    // Búsqueda numérica y por texto
+                    documents = documents.Where(d =>
+                        d.petFileId == idSearch ||
+                        d.AppointmentId == idSearch ||
+                        d.name.Contains(documentSearch) ||
+                        d.category.Contains(documentSearch));
+                }
+                else
+                {
+                    // Búsqueda textual case-insensitive más eficiente
+                    documents = documents.Where(d =>
+                        EF.Functions.Like(d.name, $"%{documentSearch}%") ||
+                        EF.Functions.Like(d.category, $"%{documentSearch}%"));
+                }
+            }
 
 
             // Filter by file type
