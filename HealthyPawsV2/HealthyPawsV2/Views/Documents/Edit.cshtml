@@ -67,6 +67,20 @@
                                     application/vnd.ms-excel" /> 
                     <span asp-validation-for="fileType" class="text-danger"></span>
                 </dd>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        @if (Model.status)
+                        {
+                            <input class="form-check-input" asp-for="status" checked />
+                        }
+                        else
+                        {
+                            <input class="form-check-input" asp-for="status" />
+                            <input type="hidden" name="reactiveDocument" value="true" />
+                        }
+                        @Html.DisplayNameFor(model => model.status)
+                    </label>
+                </div>
             </dl>
 
             <div class="form-group mt-3">

@@ -64,6 +64,7 @@
                 <input asp-for="providerInfo" class="form-control" />
                 <span asp-validation-for="providerInfo" class="text-danger"></span>
             </div>
+            <input type="hidden" asp-for="State" />
             @if (!Model.State)
             {
                 <div class="form-check">

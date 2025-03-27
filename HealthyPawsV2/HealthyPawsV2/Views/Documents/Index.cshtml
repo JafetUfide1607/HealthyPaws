@@ -59,7 +59,7 @@
     <div class="col-md-6" style="margin: 0 auto;">
         <form asp-action="Index" method="get" class="form-inline">
             <div class="form-group mr-2">
-                <input type="text" id="documentSearch" name="documentSearch" class="form-control rounded-input" placeholder="Buscar Documento..." />
+                <input type="text" id="documentSearch" name="documentSearch" class="form-control rounded-input" placeholder="Buscar por nombre de Documento..." />
             </div>
             <br/>
             <label class="toggle-label" for="fileTypeFilter">Mostrar:</label>
@@ -70,8 +70,8 @@
                 <option value="word">Documentos Word</option>
             </select>
             <select id="statusFilterDoc" name="statusFilterDoc" class="form-select" onchange="this.form.submit()" style="display: inline-block; width: auto;">
-                <option value="active" selected="@(ViewData["statusFilterInventory"]?.ToString() == "active" ? "selected" : null)">Activos</option>
-                <option value="inactive" selected="@(ViewData["statusFilterInventory"]?.ToString() == "inactive" ? "selected" : null)">Inactivos</option>
+                <option value="active" selected="@(ViewData["statusFilterDoc"]?.ToString() == "active" ? "selected" : null)">Activos</option>
+                <option value="inactive" selected="@(ViewData["statusFilterDoc"]?.ToString() == "inactive" ? "selected" : null)">Inactivos</option>
             </select>
         </form>
     </div>
@@ -158,7 +158,6 @@
                     {
                         <a class="btn btn-danger btn-sm BorrarElemento" data-estado="@item.status" asp-action="Delete" asp-route-id="@item.documentId">Eliminar</a>
                     }
-
                     @if (User.Identity.IsAuthenticated && (RolesUtils.LoggedUserRole(User, "Admin") || RolesUtils.LoggedUserRole(User, "Vet")))
                     {
                         <a asp-action="Edit" asp-route-id="@item.documentId" class="btn btn-primary btn-sm">Editar</a>

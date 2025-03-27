@@ -157,14 +157,17 @@ namespace HealthyPawsV2.Controllers
                         return NotFound();
                     }
 
-                    if(reactiveInventory && !originalInventory.State)
+                    // Si el usuario marca la opción para reactivar, cambiamos el estado a activo
+                    if (reactiveInventory)
                     {
                         inventory.State = true;
                     }
                     else
                     {
+                        // Si no, mantenemos el estado original
                         inventory.State = originalInventory.State;
                     }
+
 
                     _context.Update(inventory);
                     await _context.SaveChangesAsync();

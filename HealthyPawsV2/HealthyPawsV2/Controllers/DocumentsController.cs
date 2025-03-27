@@ -54,6 +54,7 @@ namespace HealthyPawsV2.Controllers
 				documents = documents.Where(m => m.name.Contains(documentSearch));
 			}
 
+
             // Filter by file type
             if (!string.IsNullOrEmpty(fileTypeFilter))
             {
@@ -79,6 +80,7 @@ namespace HealthyPawsV2.Controllers
             }
 
             var hpContext = await documents.ToListAsync();
+          
             ViewData["statusFilterDoc"] = statusFilterDoc;
 
             if (hpContext.Count == 0)
@@ -120,6 +122,7 @@ namespace HealthyPawsV2.Controllers
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId");
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");
             ViewData["FileTypeFilter"] = fileTypeFilter;
+
 
             return View(hpContext);
         }
@@ -219,11 +222,10 @@ namespace HealthyPawsV2.Controllers
         }
 
         // POST: Documents/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("documentId, AppointmentId, petFileId, name, category, fileType, status")] Document document, IFormFile File)
+        public async Task<IActionResult> Edit(int id, [Bind("documentId,AppointmentId,petFileId,name,category,fileType,status")] Document document,
+            IFormFile File, bool? reactiveDocument)
         {
             if (id != document.documentId)
             {
@@ -234,7 +236,14 @@ namespace HealthyPawsV2.Controllers
             {
                 try
                 {
-                   
+                    var originalDocument = await _context.Documents.AsNoTracking().FirstOrDefaultAsync(d => d.documentId == id);
+
+                    if (originalDocument == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Manejo del archivo
                     if (File != null && File.Length > 0)
                     {
                         using (var memoryStream = new MemoryStream())
@@ -245,20 +254,23 @@ namespace HealthyPawsV2.Controllers
                     }
                     else
                     {
-                        
-                        var existingDocument = await _context.Documents.AsNoTracking().FirstOrDefaultAsync(d => d.documentId == id);
-                        if (existingDocument != null)
-                        {
-                            document.fileType = existingDocument.fileType;  
-                        }
+                        document.fileType = originalDocument.fileType;
                     }
 
-                    
-                    _context.Entry(document).State = EntityState.Detached;
+                    // Lógica especial para reactivación
+                    if (reactiveDocument.HasValue && reactiveDocument.Value)
+                    {
+                        document.status = true; // Forzar activación si se solicita
+                    }
+                    else if (!document.status && originalDocument.status)
+                    {
+                        // Si estaba activo y ahora se desactiva
+                        document.status = false;
+                    }
 
-                    
                     _context.Update(document);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -271,18 +283,13 @@ namespace HealthyPawsV2.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
 
-            // Volver a llenar ViewData en caso de error de validación
-            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
+            // Recargar ViewData si hay errores
+            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId", document.AppointmentId);
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId", document.petFileId);
-            ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");
-
             return View(document);
         }
-
-
 
         private bool DocumentExists(int id)
         {
@@ -306,10 +313,10 @@ namespace HealthyPawsV2.Controllers
                 return NotFound();
             }
 
-			document.status = false;
-			await _context.SaveChangesAsync();
-			return RedirectToAction(nameof(Index));
-		}
+            document.status = false;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
         // POST: Documents/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -319,15 +326,14 @@ namespace HealthyPawsV2.Controllers
             var document = await _context.Documents.FindAsync(id);
             if (document != null)
             {
-                _context.Documents.Remove(document);
+                document.status = false; // Cambiar esto en lugar de eliminarlo
             }
 
-			
-			await _context.SaveChangesAsync();
-			return RedirectToAction(nameof(Index));
-		}
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
-        
+
 
 
         //This is to download the files

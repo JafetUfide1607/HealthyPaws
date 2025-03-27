@@ -31,6 +31,7 @@ namespace HealthyPawsV2.DAL
         [DisplayName("Nombre del Documento/Examen")]
         public string name { get; set; }
 
+        [Required]
         [DisplayName("Categoria")]
         public string category { get; set; }
 
