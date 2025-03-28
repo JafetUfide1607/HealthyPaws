@@ -115,6 +115,7 @@ namespace HealthyPawsV2.Controllers
             from appointment in _context.Appointments
             join petFile in _context.PetFiles on appointment.petFileId equals petFile.petFileId
             join user in _context.ApplicationUser on petFile.ownerId equals user.Id
+            where appointment.status != "Cancelada"
             select new
             {
                 AppointmentId = appointment.AppointmentId,
@@ -123,6 +124,12 @@ namespace HealthyPawsV2.Controllers
             "AppointmentId",
             "DisplayText"
             );
+
+
+            foreach (var appointment in _context.Appointments)
+            {
+                Console.WriteLine($"AppointmentId: {appointment.AppointmentId}, Status: {appointment.status}");
+            }
 
             ViewData["petFileName"] = new SelectList(
             from pf in _context.PetFiles
@@ -137,7 +144,7 @@ namespace HealthyPawsV2.Controllers
 
 
             //ViewBag.petFileId = new SelectList(petFiles, "Value", "Text");
-            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
+            ViewData["AppointmentId"] = new SelectList(_context.Appointments.Where(a => a.status != "Cancelada"), "AppointmentId", "AppointmentId");
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId");
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");
             ViewData["FileTypeFilter"] = fileTypeFilter;
@@ -167,7 +174,11 @@ namespace HealthyPawsV2.Controllers
         // GET: Documents/Create
         public IActionResult Create()
         {
-            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
+
+            //ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
+            //ViewData["AppointmentId"] = new SelectList(_context.Appointments.Where(a => a.status != "Cancelada"), "AppointmentId", "AppointmentId");
+
+
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId");
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");
             return View();
@@ -198,7 +209,9 @@ namespace HealthyPawsV2.Controllers
             }
 
             // Volver a llenar el ViewData en caso de error de validación
-            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
+            ViewData["AppointmentId"] = new SelectList(_context.Appointments.Where(a => a.status != "Cancelada"), "AppointmentId", "AppointmentId");
+
+            //ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId", document.petFileId);
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");
 
@@ -233,7 +246,16 @@ namespace HealthyPawsV2.Controllers
             // Pasar la categoría seleccionada al ViewBag
             ViewBag.CategoriaSeleccionada = document.category;
 
-            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
+
+            //ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
+
+            ViewData["AppointmentId"] = new SelectList(
+    _context.Appointments.Where(a => a.status != "Cancelada"),
+    "AppointmentId",
+    "AppointmentId",
+    document.AppointmentId
+);
+
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId", document.petFileId);
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");
 
@@ -305,7 +327,11 @@ namespace HealthyPawsV2.Controllers
             }
 
             // Recargar ViewData si hay errores
-            ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId", document.AppointmentId);
+            //ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId", document.AppointmentId);
+
+            ViewData["AppointmentId"] = new SelectList(_context.Appointments.Where(a => a.status != "Cancelada"),"AppointmentId","AppointmentId", document.AppointmentId);
+
+
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId", document.petFileId);
             return View(document);
         }

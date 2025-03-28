@@ -81,7 +81,7 @@ namespace HealthyPawsV2.Controllers
             ViewData["Medicamentos"] = new SelectList(_context.Inventories
                 .Where(i => i.category == "Medicamento"), "inventoryId", "name");
 
-            ViewData["Citas"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
+            ViewData["Citas"] = new SelectList(_context.Appointments.Where(a => a.status != "Cancelada"), "AppointmentId", "AppointmentId");
 
             return View(hpContext);
         }
@@ -113,7 +113,7 @@ namespace HealthyPawsV2.Controllers
             //ViewData["appointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");            
             ViewData["inventoryID"] = new SelectList(_context.Inventories.Where(i => i.category == "Medicamento"), "inventoryId", "name");
 
-            ViewData["appointmentId"] = new SelectList(_context.Appointments
+            ViewData["appointmentId"] = new SelectList(_context.Appointments.Where(a => a.status != "Cancelada")
         .Select(a => new
         {
             AppointmentId = a.AppointmentId,
@@ -140,7 +140,7 @@ namespace HealthyPawsV2.Controllers
 
             // ViewData["inventoryID"] = new SelectList(_context.Inventories, "inventoryId", "name", appointmentInventory.inventoryID);
             ViewData["inventoryID"] = new SelectList(_context.Inventories.Where(i => i.category == "Medicamento"),"inventoryId", "name", appointmentInventory.inventoryID);
-            ViewData["appointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId", appointmentInventory.appointmentId);
+            ViewData["appointmentId"] = new SelectList(_context.Appointments.Where(a => a.status != "Cancelada"), "AppointmentId", "AppointmentId", appointmentInventory.appointmentId);
 
             return View();
         }
@@ -159,7 +159,7 @@ namespace HealthyPawsV2.Controllers
             {
                 return NotFound();
             }
-            ViewData["appointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId", appointmentInventory.appointmentId);
+            ViewData["appointmentId"] = new SelectList(_context.Appointments.Where(a => a.status != "Cancelada"), "AppointmentId", "AppointmentId", appointmentInventory.appointmentId);
             ViewData["inventoryID"] = new SelectList(_context.Inventories, "inventoryId", "brand", appointmentInventory.inventoryID);
 
             return View(appointmentInventory);
@@ -202,7 +202,7 @@ namespace HealthyPawsV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["appointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId", appointmentInventory.appointmentId);
+            ViewData["appointmentId"] = new SelectList(_context.Appointments.Where(a => a.status != "Cancelada"), "AppointmentId", "AppointmentId", appointmentInventory.appointmentId);
             ViewData["inventoryID"] = new SelectList(_context.Inventories, "inventoryId", "brand", appointmentInventory.inventoryID);
             return View(appointmentInventory);
         }
