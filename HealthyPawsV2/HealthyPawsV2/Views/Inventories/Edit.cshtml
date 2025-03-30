@@ -23,9 +23,18 @@
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="category" class="control-label"></label>
                 <input asp-for="category" class="form-control" />
+                <span asp-validation-for="category" class="text-danger"></span>
+            </div> *@
+
+            <div class="form-group">
+                <label asp-for="category" class="control-label"></label>
+                <select asp-for="category" class="form-control">
+                    <option value="Medicamento">Medicamento</option>
+                    <option value="Producto">Producto</option>
+                </select>
                 <span asp-validation-for="category" class="text-danger"></span>
             </div>
 
@@ -72,6 +81,7 @@
                     <label class="form-check-label" for="reactiveInventory">Reactivar Artículo</label>
                 </div>
             }
+            <br />
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn colorButton" />
             </div>

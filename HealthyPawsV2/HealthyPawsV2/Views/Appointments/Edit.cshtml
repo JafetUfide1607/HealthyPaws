@@ -63,6 +63,12 @@
                 <textarea asp-for="Additional" class="form-control"></textarea>
                 <span asp-validation-for="Additional" class="text-danger"></span>
             </div>
+            @* Esto es de prueba *@
+            <div class="form-group">
+                <label asp-for="status" class="control-label"></label>
+                <input asp-for="status" class="form-control" readonly />
+            </div>
+
             <br />
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn colorButton" />

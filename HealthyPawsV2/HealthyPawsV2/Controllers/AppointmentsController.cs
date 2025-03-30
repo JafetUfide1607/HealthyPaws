@@ -195,13 +195,13 @@ namespace HealthyPawsV2.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (ModelState.IsValid)
-            {
-                appointment.status = "Agendada";
-                _context.Add(appointment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            //if (ModelState.IsValid)
+            //{
+            //    appointment.status = "Agendada";
+            //    _context.Add(appointment);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "name");
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "name");
             return View(appointment);
@@ -234,13 +234,13 @@ namespace HealthyPawsV2.Controllers
             }
 
             // Cargar opciones de estado
-            ViewBag.StatusOptions = new SelectList(new List<string>
-    {
-        "Completada",
-        "Agendada",
-        "Cancelada",
-        "Pendiente"
-    });
+    //        ViewBag.StatusOptions = new SelectList(new List<string>
+    //{
+    //    "Completada",
+    //    "Agendada",
+    //    "Cancelada",
+    //    "Pendiente"
+    //});
 
             // Cargar datos de mascotas y usuarios
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "name");
@@ -257,41 +257,62 @@ namespace HealthyPawsV2.Controllers
         // POST: Appointments/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,petFileId,vetId,ownerId,documentId,Date,description,status,diagnostic,Additional")] Appointment appointment)
+        //{
+
+            
+        //    if (id != appointment.AppointmentId)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(appointment);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!AppointmentExists(appointment.AppointmentId))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "name");
+        //    ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "name");
+        //    return View(appointment);
+        //}
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,petFileId,vetId,ownerId,documentId,Date,description,status,diagnostic,Additional")] Appointment appointment)
+        public async Task<IActionResult> Edit(int id, [Bind("AppointmentId,petFileId,vetId,ownerId,Date,description,status,diagnostic,Additional")] Appointment appointment)
         {
-
-            // Validación: No se permiten citas antes de las 7am o después de las 6pm, de lunes a sábado. Domingos no hay citas.
-            //bool EsDomingo(DateTime fecha) => fecha.DayOfWeek == DayOfWeek.Sunday;
-            //bool EsHorarioLaboral(DateTime fecha) =>
-            //    fecha.TimeOfDay >= TimeSpan.FromHours(7) && fecha.TimeOfDay <= TimeSpan.FromHours(18);
-
-            //if (EsDomingo(appointment.Date) || !EsHorarioLaboral(appointment.Date))
-            //{
-            //    ModelState.AddModelError("Date", "No se pueden programar citas los días Domingo ni los días de Lunes a Sábado antes de las 7 am y después de las 6 pm");
-            //}
-
-            //// Validación: Verificar si el veterinario ya tiene una cita en el mismo horario
-            //var existingAppointment = await _context.Appointments
-            //    .Where(a => a.vetId == appointment.vetId && a.Date == appointment.Date)
-            //    .FirstOrDefaultAsync();
-
-            //if (existingAppointment != null)
-            //{
-            //    ModelState.AddModelError("Date", "El veterinario ya tiene una cita asignada en el mismo horario");
-            //}
-
-            //// Validación de fecha en el pasado
-            //if (appointment.Date < DateTime.Now)
-            //{
-            //    ModelState.AddModelError("Date", "La fecha de la cita no puede ser anterior a la fecha actual");
-            //}
-
-
             if (id != appointment.AppointmentId)
             {
                 return NotFound();
+            }
+
+            var existingAppointment = await _context.Appointments.AsNoTracking().FirstOrDefaultAsync(a => a.AppointmentId == id);
+            if (existingAppointment == null)
+            {
+                return NotFound();
+            }
+
+            // Asegurarse de mantener el status actual si no se ha cambiado en la vista
+            if (string.IsNullOrEmpty(appointment.status))
+            {
+                appointment.status = existingAppointment.status;
             }
 
             if (ModelState.IsValid)
@@ -314,10 +335,17 @@ namespace HealthyPawsV2.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "name");
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "name");
             return View(appointment);
         }
+
+
+
+
+
+
 
         // GET: Appointments/Delete/5
         public async Task<IActionResult> Delete(int? id)
