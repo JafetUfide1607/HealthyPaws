@@ -58,7 +58,11 @@ namespace HealthyPawsV2.Controllers
         private async Task<List<ProvinciaReporte>> ObtenerDatosPorProvincia()
         {
             var reporte = await _context.ApplicationUser
-                .GroupBy(u => u.province) 
+                .Join(_context.Addresses,
+                      user => user.addressId,
+                      address => address.AddressId,
+                      (user, address) => new { user, address }) 
+                .GroupBy(ua => ua.address.province) 
                 .Select(g => new ProvinciaReporte
                 {
                     Provincia = g.Key,
