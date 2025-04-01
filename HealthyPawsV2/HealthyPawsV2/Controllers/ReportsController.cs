@@ -40,10 +40,25 @@ namespace HealthyPawsV2.Controllers
             return View(viewModel);
         }
 
+        //private async Task<List<ProvinciaReporte>> ObtenerDatosPorProvincia()
+        //{
+        //    var reporte = await _context.ApplicationUser
+        //        .Include(a => a.addressId)
+        //        .GroupBy(c => c.province)
+        //        .Select(g => new ProvinciaReporte
+        //        {
+        //            Provincia = g.Key,
+        //            Cantidad = g.Count()
+        //        })
+        //        .ToListAsync();
+
+        //    return reporte;
+        //}
+
         private async Task<List<ProvinciaReporte>> ObtenerDatosPorProvincia()
         {
-            var reporte = await _context.Addresses
-                .GroupBy(a => a.province)
+            var reporte = await _context.ApplicationUser
+                .GroupBy(u => u.province) 
                 .Select(g => new ProvinciaReporte
                 {
                     Provincia = g.Key,

@@ -249,12 +249,7 @@ namespace HealthyPawsV2.Controllers
 
             //ViewData["AppointmentId"] = new SelectList(_context.Appointments, "AppointmentId", "AppointmentId");
 
-            ViewData["AppointmentId"] = new SelectList(
-    _context.Appointments.Where(a => a.status != "Cancelada"),
-    "AppointmentId",
-    "AppointmentId",
-    document.AppointmentId
-);
+            ViewData["AppointmentId"] = new SelectList( _context.Appointments.Where(a => a.status != "Cancelada"), "AppointmentId", "AppointmentId",document.AppointmentId);
 
             ViewData["petFileId"] = new SelectList(_context.PetFiles, "petFileId", "petFileId", document.petFileId);
             ViewData["Users"] = new SelectList(_context.ApplicationUser, "Id", "UserName");
